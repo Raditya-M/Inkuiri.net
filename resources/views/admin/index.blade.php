@@ -1,112 +1,142 @@
+<!-- Modern admin dashboard with glassmorphic tables, improved buttons, better spacing -->
 <x-app-layout>
-  <div class="max-w-6xl mx-auto py-12 px-6">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-8 mt-10">
-      <h1 class="text-4xl font-extrabold text-white tracking-tight">📚 Daftar Buku</h1>
+    <div class="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header with Actions -->
+            <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl sm:text-4xl font-bold text-white">Content Management</h1>
+                    <p class="text-slate-400 mt-1">Manage books and events for your platform</p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <a 
+                        href="{{ route('admin.event.create') }}" 
+                        class="inline-flex items-center px-4 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-cyan-500/30"
+                    >
+                        ✨ Create Event
+                    </a>
+                    <a 
+                        href="{{ route('admin.create') }}" 
+                        class="inline-flex items-center px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-blue-500/30"
+                    >
+                        📖 Add Book
+                    </a>
+                </div>
+            </div>
 
-      <div class="flex items-center gap-3">
-        <!-- Tombol Tambah Event -->
-        <a 
-          href="{{ route('admin.event.create') }}" 
-          class="bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-emerald-700 transition-all duration-200 shadow-md"
-        >
-          🎉 Tambah Event
-        </a>
+            <!-- Books Section -->
+            <div class="mb-12">
+                <h2 class="text-2xl font-bold text-white mb-6">Books</h2>
+                <div class="overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl shadow-2xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full divide-y divide-white/10">
+                            <thead class="bg-white/5 border-b border-white/10">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-slate-200 uppercase tracking-wide">Title</th>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-slate-200 uppercase tracking-wide">Author</th>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-slate-200 uppercase tracking-wide">Description</th>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-slate-200 uppercase tracking-wide">Image</th>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-slate-200 uppercase tracking-wide">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/10 text-slate-100">
+                                @forelse($books as $book)
+                                    <tr class="hover:bg-white/5 transition-colors duration-200">
+                                        <td class="px-6 py-4 font-medium text-white">{{ $book->judul }}</td>
+                                        <td class="px-6 py-4">{{ $book->penulis }}</td>
+                                        <td class="px-6 py-4 text-slate-300">{{ Str::limit($book->deskripsi, 60) }}</td>
+                                        <td class="px-6 py-4">
+                                            @if($book->gambar)
+                                                <img src="{{ asset('storage/' . $book->gambar) }}" alt="{{ $book->judul }}" class="w-16 h-20 object-cover rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                                            @else
+                                                <span class="text-slate-500 text-sm italic">No image</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-2">
+                                                <a href="{{ route('admin.edit', $book->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 font-semibold text-sm rounded-lg transition-colors">
+                                                    ✏️ Edit
+                                                </a>
+                                                <form action="{{ route('admin.destroy', $book->id) }}" method="POST" onsubmit="return confirm('Delete this book?');" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-300 font-semibold text-sm rounded-lg transition-colors">
+                                                        🗑️ Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-12 text-center text-slate-400">
+                                            <p class="text-lg">No books added yet</p>
+                                            <p class="text-sm mt-1">Create your first book to get started</p>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Tombol Tambah Buku -->
-        <a 
-          href="{{ route('admin.create') }}" 
-          class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition-all duration-200 shadow-md"
-        >
-          + Tambah Buku
-        </a>
-      </div>
+            <!-- Events Section -->
+            <div>
+                <h2 class="text-2xl font-bold text-white mb-6">Events</h2>
+                <div class="overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl shadow-2xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full divide-y divide-white/10">
+                            <thead class="bg-white/5 border-b border-white/10">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-slate-200 uppercase tracking-wide">Title</th>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-slate-200 uppercase tracking-wide">Date</th>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-slate-200 uppercase tracking-wide">Description</th>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-slate-200 uppercase tracking-wide">Image</th>
+                                    <th class="px-6 py-4 text-left text-sm font-semibold text-slate-200 uppercase tracking-wide">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/10 text-slate-100">
+                                @forelse($events as $event)
+                                    <tr class="hover:bg-white/5 transition-colors duration-200">
+                                        <td class="px-6 py-4 font-medium text-white">{{ $event->judul }}</td>
+                                        <td class="px-6 py-4">{{ \Carbon\Carbon::parse($event->tanggal)->format('d M Y') }}</td>
+                                        <td class="px-6 py-4 text-slate-300">{{ Str::limit($event->deskripsi, 60) }}</td>
+                                        <td class="px-6 py-4">
+                                            @if($event->gambar)
+                                                <img src="{{ asset('storage/' . $event->gambar) }}" alt="{{ $event->judul }}" class="w-16 h-16 object-cover rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                                            @else
+                                                <span class="text-slate-500 text-sm italic">No image</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-2">
+                                                <a href="{{ route('admin.event.edit', $event->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 font-semibold text-sm rounded-lg transition-colors">
+                                                    ✏️ Edit
+                                                </a>
+                                                <form action="{{ route('admin.event.destroy', $event->id) }}" method="POST" onsubmit="return confirm('Delete this event?');" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-300 font-semibold text-sm rounded-lg transition-colors">
+                                                        🗑️ Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-12 text-center text-slate-400">
+                                            <p class="text-lg">No events added yet</p>
+                                            <p class="text-sm mt-1">Create your first event to get started</p>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Table Buku -->
-    <div class="overflow-hidden rounded-xl shadow-lg border border-gray-800 bg-gray-900/70 backdrop-blur-sm mb-16">
-      <table class="min-w-full divide-y divide-gray-700">
-        <thead class="bg-gray-800/80">
-          <tr>
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-300 uppercase">Judul</th>
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-300 uppercase">Penulis</th>
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-300 uppercase">Deskripsi</th>
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-300 uppercase">Gambar</th>
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-300 uppercase">Aksi</th>
-          </tr>
-        </thead>
-
-        <tbody class="divide-y divide-gray-700 text-gray-200">
-          @forelse($books as $book)
-            <tr class="hover:bg-gray-800/60 transition-colors duration-200">
-              <td class="px-6 py-4 font-medium">{{ $book->judul }}</td>
-              <td class="px-6 py-4">{{ $book->penulis }}</td>
-              <td class="px-6 py-4 text-gray-400">{{ Str::limit($book->deskripsi, 80) }}</td>
-              <td class="px-6 py-4">
-                @if($book->gambar)
-                  <img src="{{ asset('storage/' . $book->gambar) }}" alt="{{ $book->judul }}" class="w-20 h-28 object-cover rounded-md shadow-sm">
-                @else
-                  <span class="text-gray-500 italic">Tanpa Gambar</span>
-                @endif
-              </td>
-              <td class="px-6 py-4 flex items-center gap-3">
-                <a href="{{ route('admin.edit', $book->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-500 text-black text-sm font-semibold rounded-lg hover:bg-yellow-400 transition">✏️ Edit</a>
-                <form action="{{ route('admin.destroy', $book->id) }}" method="POST" onsubmit="return confirm('Yakin mau hapus buku ini? 😢')">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-500 transition">🗑️ Hapus</button>
-                </form>
-              </td>
-            </tr>
-          @empty
-            <tr><td colspan="5" class="px-6 py-8 text-center text-gray-400 italic">Belum ada buku yang ditambahkan 📭</td></tr>
-          @endforelse
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Section Event -->
-    <div class="mt-16">
-      <h2 class="text-4xl font-extrabold text-white mb-6">📅 Daftar Event</h2>
-      <div class="overflow-hidden rounded-xl shadow-lg border border-gray-800 bg-gray-900/70 backdrop-blur-sm">
-        <table class="min-w-full divide-y divide-gray-700">
-          <thead class="bg-gray-800/80">
-            <tr>
-              <th class="px-6 py-3 text-left text-sm font-semibold text-gray-300 uppercase">Judul</th>
-              <th class="px-6 py-3 text-left text-sm font-semibold text-gray-300 uppercase">Tanggal</th>
-              <th class="px-6 py-3 text-left text-sm font-semibold text-gray-300 uppercase">Deskripsi</th>
-              <th class="px-6 py-3 text-left text-sm font-semibold text-gray-300 uppercase">Gambar</th>
-              <th class="px-6 py-3 text-left text-sm font-semibold text-gray-300 uppercase">Aksi</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-700 text-gray-200">
-            @forelse($events as $event)
-              <tr class="hover:bg-gray-800/60 transition-colors duration-200">
-                <td class="px-6 py-4 font-medium">{{ $event->judul }}</td>
-                <td class="px-6 py-4">{{ \Carbon\Carbon::parse($event->tanggal)->format('d M Y') }}</td>
-                <td class="px-6 py-4 text-gray-400">{{ Str::limit($event->deskripsi, 80) }}</td>
-                <td class="px-6 py-4">
-                  @if($event->gambar)
-                    <img src="{{ asset('storage/' . $event->gambar) }}" alt="{{ $event->judul }}" class="w-20 h-20 object-cover rounded-md shadow-sm">
-                  @else
-                    <span class="text-gray-500 italic">Tanpa Gambar</span>
-                  @endif
-                </td>
-                <td class="px-6 py-4 flex items-center gap-3">
-                  <a href="{{ route('admin.event.edit', $event->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-500 text-black text-sm font-semibold rounded-lg hover:bg-yellow-400 transition">✏️ Edit</a>
-                  <form action="{{ route('admin.event.destroy', $event->id) }}" method="POST" onsubmit="return confirm('Yakin mau hapus event ini? 😢')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-500 transition">🗑️ Hapus</button>
-                  </form>
-                </td>
-              </tr>
-            @empty
-              <tr><td colspan="5" class="px-6 py-8 text-center text-gray-400 italic">Belum ada event yang ditambahkan 🎈</td></tr>
-            @endforelse
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
 </x-app-layout>

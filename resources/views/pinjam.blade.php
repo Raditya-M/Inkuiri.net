@@ -1,107 +1,116 @@
 <x-app-layout>
-<section class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<section 
+  x-data="{ open: false, selectedBook: null }"
+  class="min-h-screen text-white relative overflow-hidden py-12">
 
-    <!-- Header -->
-    <header class="mb-10">
-      <div class="flex items-center justify-between gap-6">
-        <div class="mt-12">
-          <h1 class="text-4xl sm:text-5xl font-extrabold">Daftar Buku 📚</h1>
-          <p class="mt-2 text-lg text-gray-600 dark:text-gray-300 max-w-2xl">
-            Koleksi buku literasi digital yang bisa kamu baca dan unduh langsung dari website Inkuiri.
-          </p>
-        </div>
-      </div>
+  <!-- Animated background orbs -->
+  <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+  <div class="absolute -bottom-8 right-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl opacity-20 animate-pulse delay-2000"></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <header class="mb-12 mt-8">
+      <h1 class="text-5xl sm:text-6xl font-extrabold bg-gradient-to-r from-white to-white bg-clip-text text-transparent pb-2">
+        Koleksi Buku
+      </h1>
+      <p class="mt-4 text-lg text-slate-300 max-w-2xl leading-relaxed">
+        Jelajahi dan pinjam koleksi lengkap buku literasi digital kami. Akses mudah dan nyaman untuk semua pengguna.
+      </p>
     </header>
 
-    <!-- Grid daftar buku -->
     <main>
       <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        @forelse ($books as $book)
-          <li x-data="{ open: false }" 
-              class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-all">
-            <div class="flex flex-col h-full">
+        @foreach ($books as $book)
+        <li class="group relative backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl overflow-hidden hover:border-white/40 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20">
+          <!-- Cover -->
+          <div class="h-48 bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center overflow-hidden">
+            @if($book->gambar)
+              <img src="{{ asset('storage/' . $book->gambar) }}" alt="{{ $book->judul }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+            @else
+              <span class="text-slate-400 font-semibold">Tanpa Gambar</span>
+            @endif
+          </div>
 
-              <!-- Cover -->
-              <div class="h-44 bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
-                @if($book->gambar)
-                  <img src="{{ asset('storage/' . $book->gambar) }}" alt="{{ $book->judul }}" class="w-full h-full object-cover">
-                @else
-                  <span class="text-gray-500 dark:text-gray-300 font-semibold">Tanpa Gambar</span>
-                @endif
-              </div>
-
-              <!-- Detail -->
-              <div class="p-4 flex-1 flex flex-col">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $book->judul }}</h3>
-                <p class="mt-2 text-sm text-gray-600 dark:text-gray-300 flex-1">
-                  {{ Str::limit($book->deskripsi, 120) }}
-                </p>
-                <div class="mt-4 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-                  <div>{{ $book->penulis ?? 'Anonim' }}</div>
-                  <div>&copy; Inkuiri Press</div>
-                </div>
-
-                <div class="mt-4">
-                  <button 
-                    @click="open = true"
-                    class="inline-block w-full text-center py-2 rounded-md bg-indigo-600 text-white text-sm hover:bg-indigo-700 transition">
-                    Lihat Detail
-                  </button>
-                </div>
-              </div>
+          <!-- Detail -->
+          <div class="p-6 flex flex-col">
+            <h3 class="text-xl font-bold">{{ $book->judul }}</h3>
+            <p class="mt-3 text-sm text-slate-300 flex-1 leading-relaxed">
+              {{ Str::limit($book->deskripsi, 120) }}
+            </p>
+            <div class="mt-4 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
+              <div class="font-medium">{{ $book->penulis ?? 'Anonim' }}</div>
+              <div>&copy; Inkuiri Press</div>
             </div>
 
-            <!-- Modal Detail -->
-            <div 
-              x-show="open" 
-              x-transition 
-              class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-            >
-              <div 
-                @click.away="open = false"
-                class="bg-white dark:bg-gray-800 rounded-xl shadow-lg max-w-md w-full overflow-hidden"
-              >
-                <!-- Header Modal -->
-                <div class="relative">
-                  @if($book->gambar)
-                    <img src="{{ asset('storage/' . $book->gambar) }}" class="w-full h-64 object-cover">
-                  @endif
-                  <button 
-                    @click="open = false"
-                    class="absolute top-2 right-2 bg-black/60 text-white rounded-full w-8 h-8 flex items-center justify-center text-xl font-bold">
-                    &times;
-                  </button>
-                </div>
-
-                <!-- Body Modal -->
-                <div class="p-6 space-y-3">
-                  <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">{{ $book->judul }}</h2>
-                  <p class="text-sm text-gray-500 dark:text-gray-400">Penulis: {{ $book->penulis ?? 'Anonim' }}</p>
-                  <p class="mt-3 text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{{ $book->deskripsi }}</p>
-
-                  <!-- Tombol Pinjam -->
-                  <form action="{{ route('pinjam.buku', $book->id) }}" method="POST">
-                    @csrf
-                    <button type="submit" class="bg-indigo-600 text-white px-3 py-2 rounded">
-                        Beli Buku
-                    </button>
-                </form>
-                </div>
-              </div>
+            <div class="mt-6">
+              <button
+                @click="open = true; selectedBook = @js([
+                  'id' => $book->id,
+                  'judul' => $book->judul,
+                  'penulis' => $book->penulis ?? 'Anonim',
+                  'penerbit' => $book->penerbit ?? '-',
+                  'tahun_terbit' => $book->tahun_terbit ?? '-',
+                  'deskripsi' => $book->deskripsi ?? '-',
+                  'gambar' => $book->gambar ? asset('storage/' . $book->gambar) : null,
+                ])"
+                class="w-full py-3 px-4 rounded-lg font-semibold bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50">
+                Lihat Detail
+              </button>
             </div>
-          </li>
-        @empty
-          <li class="col-span-3 text-center text-gray-400 py-20 italic">
-            Belum ada buku yang tersedia 📖
-          </li>
-        @endforelse
+          </div>
+        </li>
+        @endforeach
       </ul>
     </main>
-
   </div>
+
+  <!-- MODAL (global, bukan di dalam li) -->
+  <div 
+    x-show="open"
+    x-transition
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+  >
+    <div 
+      @click.outside="open = false"
+      class="relative backdrop-blur-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden"
+    >
+      <button 
+        @click="open = false"
+        class="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white rounded-full w-10 h-10 flex items-center justify-center transition-all border border-white/20">
+        ✕
+      </button>
+
+      <template x-if="selectedBook">
+        <div class="grid grid-cols-1 md:grid-cols-5">
+          <!-- Image -->
+          <div class="md:col-span-2 bg-slate-700 flex items-center justify-center">
+            <template x-if="selectedBook.gambar">
+              <img :src="selectedBook.gambar" class="w-full h-full object-cover">
+            </template>
+            <template x-if="!selectedBook.gambar">
+              <span class="text-slate-400">Tanpa Gambar</span>
+            </template>
+          </div>
+
+          <!-- Details -->
+          <div class="md:col-span-3 p-8 flex flex-col">
+            <h2 class="text-3xl font-bold mb-2" x-text="selectedBook.judul"></h2>
+            <p class="text-slate-400 mb-4 text-sm" x-text="'Penulis: ' + selectedBook.penulis"></p>
+            <p class="text-slate-400 mb-4 text-sm" x-text="'Penerbit: Inkuiri'"></p>
+            <p class="text-slate-200 text-sm flex-1 leading-relaxed" x-text="selectedBook.deskripsi"></p>
+
+            <form :action="'/pinjam/' + selectedBook.id" method="POST" class="mt-6">
+              @csrf
+              <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold py-3 rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-300">
+                Pinjam Buku
+              </button>
+            </form>
+          </div>
+        </div>
+      </template>
+    </div>
+  </div>
+
 </section>
 
-<!-- Alpine.js -->
-<script src="//unpkg.com/alpinejs" defer></script>
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </x-app-layout>
