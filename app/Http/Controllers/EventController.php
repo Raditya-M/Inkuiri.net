@@ -20,23 +20,25 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'tanggal' => 'required|date',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+    $request->validate([
+        'judul' => 'required|string|max:255',
+        'tanggal' => 'required|date',
+        'deskripsi' => 'required|string',
+        'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        $path = $request->hasFile('gambar') 
-            ? $request->file('gambar')->store('events', 'public') 
-            : null;
+    $path = null;
+    if ($request->hasFile('gambar')) {
+        $path = $request->file('gambar')->store('event', 'public');
+    }
 
-        Event::create([
-            'judul' => $request->judul,
-            'deskripsi' => $request->deskripsi,
-            'tanggal' => $request->tanggal,
-            'gambar' => $path,
-        ]);
+    // Simpan ke database
+    \App\Models\Event::create([
+        'judul' => $request->judul,
+        'tanggal' => $request->tanggal,
+        'deskripsi' => $request->deskripsi,
+        'gambar' => $path,
+    ]);
 
         return redirect()->route('event')->with('success', 'Event berhasil ditambahkan!');
     }
