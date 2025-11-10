@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin;
 use App\Models\Pinjaman;
+use App\Models\Event;
 use Illuminate\Container\Attributes\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 
 class AdminController extends Controller
 {
@@ -15,8 +17,9 @@ class AdminController extends Controller
      */
     public function index()
     {
+        $events = Event::latest()->get();
         $books = Admin::all();
-        return view('admin.index', compact('books'));
+        return view('admin.index', compact('books', 'events'));
     }
 
     /**
@@ -72,7 +75,7 @@ class AdminController extends Controller
     // Cek apakah user udah pernah pinjam buku ini dan belum dikembalikan
     $cek = Pinjaman::where('user_id', Auth::id())
         ->where('book_id', $book->id)
-        ->where('status', 'Dipinjam')
+        ->where('status', 'Dibeli')
         ->first();
 
     if ($cek) {
@@ -84,6 +87,7 @@ class AdminController extends Controller
         'user_id' => Auth::id(),
         'book_id' => $book->id,
         'tanggal_pinjam' => now(),
+        'status' => 'Dibeli',
     ]);
 
     return back()->with('success', 'Buku berhasil dipinjam!');
@@ -98,6 +102,17 @@ class AdminController extends Controller
 
         return view('riwayat', compact('riwayat'));
     }
+
+    public function riwayatAdmin()
+    {
+    // ambil semua data pinjaman + relasi user & buku
+        $riwayat = \App\Models\Pinjaman::with('user', 'book')
+            ->latest()
+            ->get();
+
+        return view('admin.riwayat', compact('riwayat'));
+    }
+
 
     /**
      * Display the specified resource.

@@ -13,7 +13,7 @@
               @if($item->tanggal_kembali)
                 <p class="text-sm text-green-500">Dikembalikan: {{ $item->tanggal_kembali->format('d M Y') }}</p>
               @else
-                <p class="text-sm text-yellow-500">Status: {{ $item->status }}</p>
+                <p class="text-sm text-green-500">Status: {{ $item->status }}</p>
               @endif
             </div>
             <div>

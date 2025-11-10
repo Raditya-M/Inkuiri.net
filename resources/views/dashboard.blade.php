@@ -42,17 +42,7 @@
         </h1>
         <p class="mt-8 text-lg font-medium text-pretty text-white sm:text-xl/8">
           Tujuan utama dari Inkuiri adalah untuk meningkatkan kesadaran dan pemahaman masyarakat tentang pentingnya literasi dalam berbagai aspek kehidupan. Melalui platform ini, Inkuiri berupaya memberikan ruang bagi setiap individu untuk belajar, bereksplorasi, dan mengembangkan kemampuan berpikir kritis terhadap informasi yang mereka temui.
-
-Secara khusus, tujuan Inkuiri meliputi:
         </p>
-        <p class="mt-4 text-lg font-medium text-pretty text-white sm:text-xl/8">
-          1. Mendorong minat baca dan pembelajaran sepanjang hayat.<br>
-          2. Menyediakan sumber daya edukatif yang berkualitas dan mudah diakses.<br>
-          3. Membangun komunitas pembelajar yang saling mendukung dan berbagi pengetahuan.<br>
-          4. Mengembangkan keterampilan berpikir kritis dan analitis dalam menghadapi informasi.<br>
-          5. Memfasilitasi diskusi dan kolaborasi antar pengguna untuk memperkaya wawasan.<br>
-          Dengan mencapai tujuan-tujuan ini, Inkuiri berharap dapat berkontribusi pada pembentukan masyarakat yang lebih cerdas, terinformasi, dan mampu menghadapi tantangan global dengan pengetahuan yang kuat.
-      </p>
       </div>
     </div>
 

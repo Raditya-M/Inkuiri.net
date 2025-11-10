@@ -84,7 +84,7 @@
                   <form action="{{ route('pinjam.buku', $book->id) }}" method="POST">
                     @csrf
                     <button type="submit" class="bg-indigo-600 text-white px-3 py-2 rounded">
-                        Pinjam Buku
+                        Beli Buku
                     </button>
                 </form>
                 </div>

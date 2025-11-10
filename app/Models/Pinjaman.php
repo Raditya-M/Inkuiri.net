@@ -10,7 +10,20 @@ class Pinjaman extends Model
     use HasFactory;
 
     protected $table = 'pinjaman';
-    protected $fillable = ['user_id', 'book_id', 'tanggal_pinjam', 'tanggal_kembali', 'status'];
+    protected $fillable = 
+    [
+        'user_id', 
+        'book_id', 
+        'tanggal_pinjam', 
+        'tanggal_kembali', 
+        'status'
+    ];
+
+    protected $casts = [
+        'tanggal_pinjam' => 'datetime',
+        'tanggal_kembali' => 'datetime',
+    ];
+
 
     public function book()
     {
