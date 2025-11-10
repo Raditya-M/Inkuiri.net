@@ -32,7 +32,7 @@
                     </div>
                 </div>
 
-                <!-- Stats Cards Row -->
+                
                 <div class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <!-- Books Card -->
                     <div class="group relative overflow-hidden rounded-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 backdrop-blur-xl p-6 hover:border-white/20 transition-all duration-300">
